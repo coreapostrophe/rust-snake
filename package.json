@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "cargo install wasm-pack cargo-watch",
     "dev": "concurrently \"npm run dev:wasm\" \"npm run dev:web\"",
-    "build:wasm": "wasm-pack build --target web",
+    "build:wasm": "wasm-pack build --out-dir web/src/snake-lib --target web",
     "dev:web": "npm run start -w web",
     "dev:wasm": "cargo watch -i \"web/*\" -s \"npm run build:wasm\""
   },
@@ -17,6 +17,6 @@
     "pkg"
   ],
   "devDependencies": {
-    "concurrently": "*"
+    "concurrently": "^8.2.1"
   }
 }
