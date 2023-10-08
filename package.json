@@ -2,15 +2,21 @@
   "name": "rust-snake",
   "version": "1.0.0",
   "private": true,
-  "description": "",
+  "description": "Simple wasm implementation of a snake game",
   "scripts": {
-    "predev": "npm run build:wasm",
-    "dev": "npm run start -w web",
-    "build:wasm": "wasm-pack build --out-dir web/src/wasm --target web"
+    "prepare": "cargo install wasm-pack cargo-watch",
+    "dev": "concurrently \"npm run dev:wasm\" \"npm run dev:web\"",
+    "build:wasm": "wasm-pack build --target web",
+    "dev:web": "npm run start -w web",
+    "dev:wasm": "cargo watch -i \"web/*\" -s \"npm run build:wasm\""
   },
-  "author": "",
+  "author": "Daveren Cordero<daverencordero@gmail.com>",
   "license": "ISC",
   "workspaces": [
-    "web"
-  ]
+    "web",
+    "pkg"
+  ],
+  "devDependencies": {
+    "concurrently": "*"
+  }
 }
