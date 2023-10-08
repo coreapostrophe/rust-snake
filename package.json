@@ -10,6 +10,7 @@
     "dev:web": "npm run start -w web",
     "dev:wasm": "cargo watch -i \"web/*\" -s \"npm run build:wasm\""
   },
+  "prettier": "@vercel/style-guide/prettier",
   "author": "Daveren Cordero<daverencordero@gmail.com>",
   "license": "ISC",
   "workspaces": [
@@ -17,6 +18,8 @@
     "pkg"
   ],
   "devDependencies": {
+    "prettier": "3.0.3",
+    "@vercel/style-guide": "^5.0.0",
     "concurrently": "^8.2.1"
   }
 }

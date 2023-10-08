@@ -1,6 +1,6 @@
 use wee_alloc::WeeAlloc;
 
-pub mod world;
+pub mod game;
 
 #[global_allocator]
 static ALLOC: WeeAlloc = WeeAlloc::INIT;
