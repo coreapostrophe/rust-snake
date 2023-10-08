@@ -1,0 +1,14 @@
+{
+  "name": "rust-snake",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "scripts": {
+    "dev": "npm run start -w web"
+  },
+  "author": "",
+  "license": "ISC",
+  "workspaces": [
+    "web"
+  ]
+}
