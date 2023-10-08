@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './app.scss';
-import init, {greet} from "./snake-lib"
+import init from "./snake-lib"
+import SnakeGame from "./snake-game/snake-game";
 
 function App() {
     const [libMounted, setLibMounted] = useState<boolean>(false);
@@ -11,7 +12,7 @@ function App() {
 
     return (
         <div className="App">
-            {libMounted && greet("World")}
+            {libMounted && <SnakeGame />}
         </div>
     );
 }

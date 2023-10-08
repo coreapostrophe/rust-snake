@@ -1,12 +1,6 @@
-use wasm_bindgen::prelude::*;
+use wee_alloc::WeeAlloc;
 
-#[wasm_bindgen]
-pub fn greet(name: &str) -> String {
-    let formatter_str = format!("Hello, {}!", name);
-    formatter_str
-}
+pub mod world;
 
-#[wasm_bindgen]
-extern {
-    pub fn alert(s: &str);
-}
+#[global_allocator]
+static ALLOC: WeeAlloc = WeeAlloc::INIT;
