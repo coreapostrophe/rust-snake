@@ -3,13 +3,18 @@ import ReactDOM from 'react-dom/client';
 import './index.scss';
 import App from './app';
 import reportWebVitals from './reportWebVitals';
+import {ChakraProvider} from '@chakra-ui/react';
+import {ColorModeScript} from '@chakra-ui/react';
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 root.render(
     <React.StrictMode>
-        <App/>
+        <ChakraProvider>
+            <ColorModeScript initialColorMode={"dark"}/>
+            <App/>
+        </ChakraProvider>
     </React.StrictMode>
 );
 
