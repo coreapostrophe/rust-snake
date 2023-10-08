@@ -4,7 +4,9 @@
   "private": true,
   "description": "",
   "scripts": {
-    "dev": "npm run start -w web"
+    "predev": "npm run build:wasm",
+    "dev": "npm run start -w web",
+    "build:wasm": "wasm-pack build --out-dir web/src/wasm --target web"
   },
   "author": "",
   "license": "ISC",
