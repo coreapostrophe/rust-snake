@@ -7,6 +7,7 @@ use self::{window::Window, world::World};
 pub mod position;
 pub mod window;
 pub mod world;
+pub mod snake;
 
 #[wasm_bindgen]
 pub struct SnakeEngine {

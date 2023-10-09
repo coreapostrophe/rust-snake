@@ -2,6 +2,7 @@ use serde::{Serialize, ser::{SerializeTuple, SerializeSeq}};
 
 pub struct Point<T: Serialize>((T, T));
 
+
 impl<T: Serialize> Point<T> {
     pub fn new(x: T, y: T) -> Self {
         Self((x, y))
@@ -14,13 +15,32 @@ impl<T: Serialize> Point<T> {
     }
 }
 
+impl Point<f32> {
+    pub fn distance(&self, point: &Self) -> f32 {
+        let distance = f32::sqrt(f32::powi(self.x() - point.x(), 2) + f32::powi(self.y() - point.y(), 2));
+        distance
+    }
+}
+
+impl<T: Serialize + PartialEq> Point<T> {
+    pub fn is_equal(&self, point: &Self) -> bool {
+        (self.x() == point.x()) & (self.y() == point.y())
+    }
+}
+
+impl<T: Serialize + Copy> Clone for Point<T> {
+    fn clone(&self) -> Self {
+        Self((self.0.0, self.0.1))
+    }
+}
+
 impl<T: Serialize> Serialize for Point<T> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer {
         let mut state = serializer.serialize_tuple(2)?;
-        state.serialize_element(&self.0.0)?;
-        state.serialize_element(&self.0.1)?;
+        state.serialize_element(&self.x())?;
+        state.serialize_element(&self.y())?;
         state.end()
     }
 }
