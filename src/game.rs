@@ -1,8 +1,10 @@
 use std::collections::HashMap;
-
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+
+use self::position::{Point, Grid};
 use self::{window::Window, world::World};
 
+pub mod position;
 pub mod window;
 pub mod world;
 
@@ -29,6 +31,7 @@ impl SnakeEngine {
         let game_world = self.world.as_ref().unwrap_or_else(|| {
             panic!("World is not found")
         });
+
         let mut hash_map: HashMap<String, f32> = HashMap::new();
         hash_map.insert("columns".to_string(), game_world.columns() as f32);
         hash_map.insert("rows".to_string(), game_world.rows() as f32);
@@ -44,21 +47,20 @@ impl SnakeEngine {
         let game_window = self.window.as_ref().unwrap_or_else(|| {
             panic!("Window is not found")
         });
-        let cell_size = game_window.width() as f32 / game_world.columns() as f32;
-        game_world.set_cell_size(cell_size as f32);
+        let cell_size: f32 = game_window.width() as f32 / game_world.columns() as f32;
+        game_world.set_cell_size(cell_size);
 
-        let mut grid_vector = Vec::new();
-        for row in 0..(game_world.rows()) {
-            let mut column_vector = Vec::new();
-            for column in 0..(game_world.columns()) {
+        let grid_vector = Grid::new(
+            game_world.rows(),
+            game_world.columns(),
+            Some(Box::new(move |row, column| {
                 let x_coordinate = column as f32 * cell_size;
                 let y_coordinate = row as f32 * cell_size;
-                column_vector.push((y_coordinate, x_coordinate));
-            }
-            grid_vector.push(column_vector.into_boxed_slice());
-        };
+                Point::new(y_coordinate, x_coordinate)
+            }))
+        );
 
-        serde_wasm_bindgen::to_value(&grid_vector.as_slice()).unwrap()
+        serde_wasm_bindgen::to_value(&grid_vector).unwrap()
     }
 }
 
