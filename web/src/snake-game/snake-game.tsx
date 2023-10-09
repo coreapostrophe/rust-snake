@@ -6,7 +6,7 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import { Container, Graphics, Stage, Text } from '@pixi/react';
+import { Graphics, Stage } from '@pixi/react';
 import styles from './snake-game.module.scss';
 import { SnakeEngine, SnakeEngineBuilder } from '../snake-lib';
 
@@ -15,17 +15,19 @@ export const GAME_BACKGROUND = 0xffffff;
 export function WorldGrid(props): ReactElement {
   const { cell_grid, cell_size } = props;
 
-  console.log(cell_size);
-
   const graphic = useCallback(
     (g: PixiGraphics) => {
       g.clear();
-      g.beginFill(0xf3f3f3, 1);
-      g.lineStyle(2, 0x737373, 1);
-      g.drawRect(50, 150, 150, 150);
 
-      cell_grid.forEach((row) => {
-        row.forEach(([x, y]) => {
+      cell_grid.forEach((row, rowIndex) => {
+        const offsetRow = rowIndex % 2 === 0;
+        row.forEach(([x, y], cellIndex) => {
+          const colorTuple = [0xf2d9d7, 0xdbc0b8];
+          if (cellIndex % 2 === 0) {
+            g.beginFill(colorTuple[+offsetRow], 1);
+          } else {
+            g.beginFill(colorTuple[+!offsetRow], 1);
+          }
           g.drawRect(x, y, cell_size, cell_size);
         });
       });
@@ -38,7 +40,7 @@ export function WorldGrid(props): ReactElement {
 
 export default function SnakeGame(): ReactElement {
   const snakeEngine: MutableRefObject<SnakeEngine> = useRef(
-    SnakeEngineBuilder.new().set_window(500, 500).set_world(9, 9).build(),
+    SnakeEngineBuilder.new().set_window(500, 500).set_world(25, 25).build(),
   );
 
   const cell_grid = useMemo(() => snakeEngine.current.generate_cells(), []);
