@@ -1,9 +1,9 @@
-use serde::{Serialize, ser::{SerializeTuple, SerializeSeq}};
+use serde::Serialize;
 
-pub struct Point<T: Serialize>((T, T));
+#[derive(Serialize)]
+pub struct Point<T>((T, T));
 
-
-impl<T: Serialize> Point<T> {
+impl<T> Point<T> {
     pub fn new(x: T, y: T) -> Self {
         Self((x, y))
     }
@@ -22,29 +22,19 @@ impl Point<f32> {
     }
 }
 
-impl<T: Serialize + PartialEq> Point<T> {
+impl<T: PartialEq> Point<T> {
     pub fn is_equal(&self, point: &Self) -> bool {
         (self.x() == point.x()) & (self.y() == point.y())
     }
 }
 
-impl<T: Serialize + Copy> Clone for Point<T> {
+impl<T: Copy> Clone for Point<T> {
     fn clone(&self) -> Self {
         Self((self.0.0, self.0.1))
     }
 }
 
-impl<T: Serialize> Serialize for Point<T> {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer {
-        let mut state = serializer.serialize_tuple(2)?;
-        state.serialize_element(&self.x())?;
-        state.serialize_element(&self.y())?;
-        state.end()
-    }
-}
-
+#[derive(Serialize)]
 pub struct Grid(Box<[Box<[Point<f32>]>]>);
 
 pub type PointClosure = Box<dyn Fn(u32, u32) -> Point<f32>>;
@@ -63,17 +53,5 @@ impl Grid {
             grid_vector.push(column_vector.into_boxed_slice());
         }
         Self(grid_vector.into_boxed_slice())
-    }
-}
-
-impl Serialize for Grid {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer {
-        let mut seq = serializer.serialize_seq(Some(self.0.len()))?;
-        for row in self.0.into_iter() {
-            seq.serialize_element(row)?;
-        }
-        seq.end()
     }
 }

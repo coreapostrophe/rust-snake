@@ -10,6 +10,7 @@ pub struct World {
 
 #[wasm_bindgen]
 impl World {
+    #[wasm_bindgen(constructor)]
     pub fn new(columns: u32, rows: u32) -> Self {
         Self {
             columns,
