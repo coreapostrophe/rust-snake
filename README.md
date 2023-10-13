@@ -30,7 +30,10 @@ that, as of right now, the technology is not yet viable or stable enough to be u
 tinkering. WASM strikes me as a utility that allows developers to outsource expensive functions from a more performant
 runtime. It's not something that could serve as a full backend for render sequences, like how I was trying to make it
 out to be--though that does seem to be a future implementation of it. From what I've searched, it's not really faster
-than javascript on common tasks, which greatly reduces its viability for the current industry.
+than javascript on common tasks, which greatly reduces its viability for the current industry. It's good by itself. You
+can probably write high performant front-end applications with Rust WASM if you want. I think the real problem comes
+when
+comingling it with javascript and trying to make the two languages work together.
 
 ### ✨ Conclusion
 
