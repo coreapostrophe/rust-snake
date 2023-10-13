@@ -1,5 +1,5 @@
 
-use wasm_bindgen::{prelude::wasm_bindgen};
+use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
 pub struct World {
@@ -8,9 +8,7 @@ pub struct World {
     cell_size: f32
 }
 
-#[wasm_bindgen]
 impl World {
-    #[wasm_bindgen(constructor)]
     pub fn new(columns: u32, rows: u32) -> Self {
         Self {
             columns,

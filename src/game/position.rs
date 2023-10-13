@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -12,6 +14,12 @@ impl<T> Point<T> {
     }
     pub fn y(&self) -> &T {
         &self.0.1
+    }
+}
+
+impl<T: Clone + Serialize + Add<Output = T>> Point<T> {
+    pub fn get_translate(&self, x_units: T, y_units: T) -> Self {
+        Self((self.x().clone() + x_units, self.y().clone() + y_units))
     }
 }
 

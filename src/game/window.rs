@@ -6,9 +6,7 @@ pub struct Window{
     height: u32
 }
 
-#[wasm_bindgen]
 impl Window {
-    #[wasm_bindgen(constructor)]
     pub fn new(width_pixels: u32, height_pixels: u32) -> Self {
         Self {
             width: width_pixels,
