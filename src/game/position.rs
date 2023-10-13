@@ -1,4 +1,4 @@
-use std::ops::Add;
+use std::ops::{Add, AddAssign};
 
 use serde::Serialize;
 
@@ -14,6 +14,19 @@ impl<T> Point<T> {
     }
     pub fn y(&self) -> &T {
         &self.0.1
+    }
+}
+
+impl<T: AddAssign> Point<T> {
+    pub fn translate_x(&mut self, units: T) {
+        self.0.0 += units;
+    }
+    pub fn translate_y(&mut self, units: T) {
+        self.0.1 += units;
+    }
+    pub fn translate(&mut self, x_units: T, y_units: T)  {
+        self.translate_x(x_units);
+        self.translate_y(y_units);
     }
 }
 

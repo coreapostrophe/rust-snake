@@ -1,7 +1,9 @@
 
+use serde::Serialize;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
+#[derive(Serialize)]
 pub struct World {
     columns: u32,
     rows: u32,
@@ -13,7 +15,7 @@ impl World {
         Self {
             columns,
             rows,
-            cell_size: 25.0
+            cell_size: 1.0
         }
     }
     pub fn columns(&self) -> u32 {

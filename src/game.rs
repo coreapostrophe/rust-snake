@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 use self::position::{Point, Grid};
@@ -20,14 +19,7 @@ pub struct SnakeEngine {
 #[wasm_bindgen]
 impl SnakeEngine {
     pub fn window(&self) -> JsValue {
-        let game_window = self.window.as_ref().unwrap_or_else(|| {
-            panic!("Window is not found")
-        });
-        let mut hash_map = HashMap::new();
-        hash_map.insert("width".to_string(), game_window.width());
-        hash_map.insert("height".to_string(), game_window.height());
-
-        serde_wasm_bindgen::to_value(&hash_map).unwrap()
+        serde_wasm_bindgen::to_value(&self.window).unwrap()
     }
 
     pub fn snake(&self) -> JsValue {
@@ -35,16 +27,7 @@ impl SnakeEngine {
     }
 
     pub fn world(&self) -> JsValue {
-        let game_world = self.world.as_ref().unwrap_or_else(|| {
-            panic!("World is not found")
-        });
-
-        let mut hash_map: HashMap<String, f32> = HashMap::new();
-        hash_map.insert("columns".to_string(), game_world.columns() as f32);
-        hash_map.insert("rows".to_string(), game_world.rows() as f32);
-        hash_map.insert("cell_size".to_string(), game_world.cell_size());
-        
-        serde_wasm_bindgen::to_value(&hash_map).unwrap()
+        serde_wasm_bindgen::to_value(&self.world).unwrap()
     }
 
     pub fn generate_snake(&mut self) -> JsValue {
@@ -62,7 +45,7 @@ impl SnakeEngine {
         };
         let snake_segment = snake_head.get_translate(-1.0, 0.0);
 
-        let snake = Snake::new(&[
+        let snake = Snake::new(vec![
             snake_head,
             snake_segment
         ]);

@@ -3,21 +3,23 @@ import {
   MutableRefObject,
   ReactElement,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 import { Graphics, Stage } from '@pixi/react';
 import styles from './snake-game.module.scss';
-import { SnakeEngine, SnakeEngineBuilder } from '../snake-lib';
+import { SnakeEngine, SnakeEngineBuilder, World } from '../snake-lib';
 
 export const GAME_BACKGROUND = 0xffffff;
 
 export function WorldGrid(props): ReactElement {
-  const { cell_grid, cell_size } = props;
+  const { cellGrid, cellSize } = props;
 
   const graphic = useCallback(
     (g: PixiGraphics) => {
-      cell_grid.forEach((row, rowIndex) => {
+      cellGrid.forEach((row, rowIndex) => {
         const offsetRow = rowIndex % 2 === 0;
         row.forEach(([x, y], cellIndex) => {
           const colorTuple = [0xf2d9d7, 0xdbc0b8];
@@ -26,51 +28,55 @@ export function WorldGrid(props): ReactElement {
           } else {
             g.beginFill(colorTuple[+!offsetRow], 1);
           }
-          g.drawRect(x, y, cell_size, cell_size);
+          g.drawRect(x, y, cellSize, cellSize);
         });
       });
     },
-    [cell_grid, cell_size],
+    [cellGrid, cellSize],
   );
 
   return <Graphics draw={graphic} />;
 }
 
 export function Snake(props): ReactElement {
-  const { snake_body, cell_size } = props;
+  const { snakeBody, cellSize } = props;
 
   const graphic = useCallback(
     (g: PixiGraphics) => {
+      if (!snakeBody) return;
+
       g.beginFill(0x2f7362, 1);
-      snake_body.forEach(([x, y]) => {
-        g.drawRect(x, y, cell_size, cell_size);
+      snakeBody.forEach(([x, y]) => {
+        g.drawRect(x, y, cellSize, cellSize);
       });
     },
-    [cell_size, snake_body],
+    [cellSize, snakeBody],
   );
 
   return <Graphics draw={graphic} />;
 }
 
 export default function SnakeGame(): ReactElement {
+  const [snakeBody, setSnakeBody] = useState();
+
   const snakeEngine: MutableRefObject<SnakeEngine> = useRef(
     SnakeEngineBuilder.new().set_window(500, 500).set_world(25, 25).build(),
   );
+  const cellGrid = useMemo(() => snakeEngine.current.generate_cells(), []);
 
-  const cell_grid = useMemo(() => snakeEngine.current.generate_cells(), []);
-  const snake_body = useMemo(() => snakeEngine.current.generate_snake(), []);
-  const cell_size = useMemo(
-    () => snakeEngine.current.world().get('cell_size'),
+  const window: Window = useMemo(() => snakeEngine.current.window(), []);
+  const world: World = useMemo(() => snakeEngine.current.world(), []);
+  const cellSize = useMemo(() => world.cell_size, [world.cell_size]);
+  const generatedSnake = useMemo(
+    () => snakeEngine.current.generate_snake(),
     [],
   );
 
-  const { windowWidth, windowHeight } = useMemo(
-    () => ({
-      windowWidth: snakeEngine.current.window().get('width'),
-      windowHeight: snakeEngine.current.window().get('height'),
-    }),
-    [],
-  );
+  const { width: windowWidth, height: windowHeight } = window;
+
+  useEffect(() => {
+    setSnakeBody(generatedSnake);
+  }, [generatedSnake]);
 
   return (
     <Stage
@@ -79,8 +85,8 @@ export default function SnakeGame(): ReactElement {
       className={styles.Stage}
       options={{ backgroundColor: GAME_BACKGROUND }}
     >
-      <WorldGrid cell_grid={cell_grid} cell_size={cell_size} />
-      <Snake snake_body={snake_body} cell_size={cell_size} />
+      <WorldGrid cellGrid={cellGrid} cellSize={cellSize} />
+      <Snake snakeBody={snakeBody} cellSize={cellSize} />
     </Stage>
   );
 }

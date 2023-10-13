@@ -1,6 +1,8 @@
+use serde::Serialize;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
+#[derive(Serialize)]
 pub struct Window{
     width: u32,
     height: u32
