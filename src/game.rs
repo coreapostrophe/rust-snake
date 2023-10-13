@@ -1,4 +1,5 @@
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+use web_sys::console;
 
 use self::position::{Point, Grid};
 use self::snake::Snake;
@@ -28,6 +29,49 @@ impl SnakeEngine {
 
     pub fn world(&self) -> JsValue {
         serde_wasm_bindgen::to_value(&self.world).unwrap()
+    }
+
+    pub fn move_snake(&mut self, x_units: f32, y_units: f32) -> JsValue {
+        {
+            console::log_1(&serde_wasm_bindgen::to_value(&self.snake).unwrap());
+            let snake = self.snake.as_mut().unwrap_or_else(|| {
+                panic!("Snake is not found")
+            });
+            let snake_body = snake.mut_body();
+            let snake_body_len = snake_body.len();
+
+            for index in 0..(snake_body_len - 1) {
+                if index != 0 {
+                    snake_body[index] = snake_body[index - 1].clone();
+                }
+            }
+        }
+
+        let snake = self.snake.as_ref().unwrap_or_else(|| {
+            panic!("Snake is not found")
+        });
+        let is_valid_movement = self.is_valid_movement(snake.body(), x_units, y_units);
+
+        {
+            let snake = self.snake.as_mut().unwrap_or_else(|| {
+                panic!("Snake is not found")
+            });
+            let snake_body = snake.mut_body();
+            if is_valid_movement {
+                snake_body[0].translate(x_units, y_units);
+            }
+        }
+
+        let snake = self.snake.as_ref().unwrap_or_else(|| {
+            panic!("Snake is not found")
+        });
+        let game_world = self.world.as_ref().unwrap_or_else(|| {
+            panic!("World is not found")
+        });
+        let cell_size = game_world.cell_size();
+
+        let snake_in_cells = self.transform_snake_to_cells(&snake, &cell_size);
+        serde_wasm_bindgen::to_value(&snake_in_cells).unwrap()
     }
 
     pub fn generate_snake(&mut self) -> JsValue {
@@ -80,6 +124,31 @@ impl SnakeEngine {
 }
 
 impl SnakeEngine {
+    pub fn is_valid_movement(&self, snake_body: &Vec<Point<f32>>, x_units: f32, y_units: f32) -> bool {
+        let game_world = self.world.as_ref().unwrap_or_else(|| {
+            panic!("World is not found")
+        });
+        let snake_head = &snake_body[0];
+        let new_snake_head = snake_head.get_translate(x_units, y_units);
+
+        // Snake should not go out of bounds
+        if new_snake_head.x() < &0.0 ||
+           new_snake_head.x() > &(game_world.rows() as f32) ||
+           new_snake_head.y() < &0.0 ||
+           new_snake_head.y() > &(game_world.columns() as f32) {
+            return false;
+        }
+
+        // Snake should not intersect with his body
+        for segment in snake_body.iter() {
+            if new_snake_head.is_equal(segment) {
+                return false;
+            }
+        }
+
+        true
+    }
+
     pub fn transform_snake_to_cells(&self, snake: &Snake, cell_size: &f32) -> Vec<Point<f32>> {
         let snake_body = snake.body();
         let mut new_snake_body = Vec::new();

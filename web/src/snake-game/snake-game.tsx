@@ -12,6 +12,7 @@ import { Graphics, Stage } from '@pixi/react';
 import styles from './snake-game.module.scss';
 import { SnakeEngine, SnakeEngineBuilder, World } from '../snake-lib';
 import KeyboardInterface from '../keyboard-interface/keyboard-interface';
+import { Button } from '@chakra-ui/react';
 
 export const GAME_BACKGROUND = 0xffffff;
 
@@ -81,6 +82,12 @@ export default function SnakeGame(): ReactElement {
 
   return (
     <>
+      <Button
+        mb={4}
+        onClick={() => console.log(snakeEngine.current.move_snake(1, 0))}
+      >
+        test
+      </Button>
       <Stage
         width={windowWidth}
         height={windowHeight}
