@@ -18,8 +18,11 @@
     "pkg"
   ],
   "devDependencies": {
-    "prettier": "3.0.3",
     "@vercel/style-guide": "^5.0.0",
-    "concurrently": "^8.2.1"
+    "concurrently": "^8.2.1",
+    "prettier": "3.0.3"
+  },
+  "dependencies": {
+    "react-feather": "^2.0.10"
   }
 }

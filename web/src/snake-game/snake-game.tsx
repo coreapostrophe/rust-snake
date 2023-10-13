@@ -11,6 +11,7 @@ import {
 import { Graphics, Stage } from '@pixi/react';
 import styles from './snake-game.module.scss';
 import { SnakeEngine, SnakeEngineBuilder, World } from '../snake-lib';
+import KeyboardInterface from '../keyboard-interface/keyboard-interface';
 
 export const GAME_BACKGROUND = 0xffffff;
 
@@ -79,14 +80,17 @@ export default function SnakeGame(): ReactElement {
   }, [generatedSnake]);
 
   return (
-    <Stage
-      width={windowWidth}
-      height={windowHeight}
-      className={styles.Stage}
-      options={{ backgroundColor: GAME_BACKGROUND }}
-    >
-      <WorldGrid cellGrid={cellGrid} cellSize={cellSize} />
-      <Snake snakeBody={snakeBody} cellSize={cellSize} />
-    </Stage>
+    <>
+      <Stage
+        width={windowWidth}
+        height={windowHeight}
+        className={styles.Stage}
+        options={{ backgroundColor: GAME_BACKGROUND }}
+      >
+        <WorldGrid cellGrid={cellGrid} cellSize={cellSize} />
+        <Snake snakeBody={snakeBody} cellSize={cellSize} />
+      </Stage>
+      <KeyboardInterface />
+    </>
   );
 }
